@@ -71,6 +71,37 @@ const AddResourceToInventory = ({ resource }) => {
   );
 };
 
+const SharePlanetCard = ({ sectorData }) => {
+
+  const handleShare = () => {
+    console.log("Handling");
+  }
+
+  // const {
+  //   id,
+  //   created_at,
+  //   anomaly,
+  //   owner,
+  //   deposit,
+  //   coverUrl,
+  //   exploration_start_data,
+  //   explored,
+  // } = sectorData;
+
+  return (
+      <div>
+          <button
+            onClick={handleShare}
+            className={'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto'}
+          >
+            Share
+          </button>
+
+
+      </div>
+  )
+}
+
 export default function BasePlanetSector({ sectorid }: { sectorid: string }) {
   const router = useRouter();
   const { id: sectorId } = router.query;
@@ -278,7 +309,10 @@ export default function BasePlanetSector({ sectorid }: { sectorid: string }) {
         </div>
       <div>
           <PlacedStructures sectorId={Number(sectorid)} />
-          <AddResourceToInventory resource={deposit} />
+          <div className={'flex justify-between'}>
+            <AddResourceToInventory resource={deposit} />
+            <SharePlanetCard sectorData={sectorData}/>
+          </div>
           {/* <SectorItems planetSectorId={sectorid} /> */}
           <SectorStructureOwned sectorid={sectorid} />
           <p>{deposit}</p>

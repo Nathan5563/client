@@ -5,8 +5,8 @@
   "proxy": "http://127.0.0.1:5000",
   "browser": {
     "fs": false,
-    "path": false,
-    "os": false
+    "os": false,
+    "path": false
   },
   "scripts": {
     "dev": "next dev",
