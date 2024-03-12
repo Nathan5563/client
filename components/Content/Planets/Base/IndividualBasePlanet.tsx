@@ -3,8 +3,9 @@ import { useRouter } from "next/router";
 import { useSupabaseClient, useSession } from "@supabase/auth-helpers-react";
 import ContentPlaceholder, { ActivateButton } from "../PlanetData/ContentPlaceholder";
 import Link from "next/link";
+import { LightkurveBaseGraph } from "../PlanetData/ContentPlaceholder";
 
-export function IndividualBasePlanetDesktop({ id }: { id: string }) {
+export function IndividualBasePlanetDesktop({ id }: { id: string }) { 
   const router = useRouter();
   
     const supabase = useSupabaseClient();
@@ -21,6 +22,17 @@ export function IndividualBasePlanetDesktop({ id }: { id: string }) {
   
     const [screenWidth, setScreenWidth] = useState<number>(0);
     const [showSidebar, setShowSidebar] = useState<boolean>(true);
+
+    // For handling selection of specific structures and then displaying content
+    const [selectedStructure, setSelectedStructure] = useState(null);
+
+    const handleStructureClick = (structureName) => {
+      setSelectedStructure(planetId); // Set selectedStructure to planetId
+    };    
+  
+    const handleClosePopup = () => {
+      setSelectedStructure(null);
+    };
   
     useEffect(() => {
       const handleResize = () => {
@@ -98,26 +110,6 @@ export function IndividualBasePlanetDesktop({ id }: { id: string }) {
       if (!session || !planetId) {
         return;
       }
-
-        //   async function fetchSectorsForPlanet() {
-  //     try {
-  //       const { data, error } = await supabase
-  //         .from("basePlanetsSECTORS")
-  //         .select("*");
-  
-  //       setSectors(data);
-  
-  //       if (error) {
-  //         console.error("Error fetching sectors data:", error.message);
-  //         return;
-  //       }
-  
-  //       setSectors(data);
-  //       console.log(data);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
   
       const { data, error } = await supabase
         .from("inventoryPLANETS")
@@ -228,67 +220,21 @@ export function IndividualBasePlanetDesktop({ id }: { id: string }) {
         </div>
       </div>
     </div></div>
-    {/* <div>
-      <h1>Sectors on Planet {planetId}</h1>
-      <div className="grid grid-cols-4 gap-4">
-        {sectorData.map((sector) => (
-          <div key={sector.id}>
-            <p>Sector ID: {sector.id}</p>
-            <p>Owner: {sector.owner}</p>
-          </div>
-        ))}
-      </div>
-    </div> */}
-                {/* <img
-                  alt="Planet Mycelium"
-                  className="object-cover h-full w-full"
-                  height="1080"
-                  src="/placeholder.svg"
-                  style={{
-                    aspectRatio: "1920/1080",
-                    objectFit: "cover",
-                  }}
-                  width="1920"
-                /> */}
                 <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 gap-4 p-40 my-12">
                   <button className="justify-self-start self-start">
-                    {/* <img
-                      alt="Structure 1"
-                      className="w-12 h-12"
-                      height="50"
-                      src="https://qwbufbmxkjfaikoloudl.supabase.co/storage/v1/object/public/planets/71/TOI%20700.png"
-                      style={{
-                        aspectRatio: "50/50",
-                        objectFit: "cover",
-                      }}
-                      width="50"
-                    /> */}
                   </button>
-                  <button className="justify-self-center self-start">
+                  <button
+                    className="justify-self-center self-start"
+                    onClick={() => handleStructureClick("Structure 2")}
+                  >
                     <img
                       alt="Structure 2"
                       className="w-24 h-24"
-                      height="50"
                       src="/assets/Inventory/Structures/Telescope2.png"
-                      style={{
-                        aspectRatio: "50/50",
-                        objectFit: "cover",
-                      }}
-                      width="50"
                     />
+                    <div className="text-center text-white text-opacity-90 text-[27.17px] font-medium font-['Inter']">View planet light curves</div>
                   </button>
                   <button className="justify-self-end self-start">
-                    {/* <img
-                      alt="Structure 3"
-                      className="w-12 h-12"
-                      height="50"
-                      src="https://qwbufbmxkjfaikoloudl.supabase.co/storage/v1/object/public/planets/71/TOI%20700.png"
-                      style={{
-                        aspectRatio: "50/50",
-                        objectFit: "cover",
-                      }}
-                      width="50"
-                    /> */}
                   </button>
                   <button className="justify-self-start self-center">
                     <img
@@ -317,101 +263,27 @@ export function IndividualBasePlanetDesktop({ id }: { id: string }) {
                     />
                   </button>
                   <button className="justify-self-end self-center">
-                    {/* <img
-                      alt="Structure 6"
-                      className="w-12 h-12"
-                      height="50"
-                      src="https://qwbufbmxkjfaikoloudl.supabase.co/storage/v1/object/public/planets/71/TOI%20700.png"
-                      style={{
-                        aspectRatio: "50/50",
-                        objectFit: "cover",
-                      }}
-                      width="50"
-                    /> */}
                   </button>
                   <button className="justify-self-start self-end">
-                    {/* <img
-                      alt="Structure 7"
-                      className="w-12 h-12"
-                      height="50"
-                      src="https://qwbufbmxkjfaikoloudl.supabase.co/storage/v1/object/public/planets/71/TOI%20700.png"
-                      style={{
-                        aspectRatio: "50/50",
-                        objectFit: "cover",
-                      }}
-                      width="50"
-                    /> */}
                   </button>
                   <button className="justify-self-center self-end">
-                    {/* <img
-                      alt="Structure 8"
-                      className="w-12 h-12"
-                      height="50"
-                      src="https://qwbufbmxkjfaikoloudl.supabase.co/storage/v1/object/public/planets/71/TOI%20700.png"
-                      style={{
-                        aspectRatio: "50/50",
-                        objectFit: "cover",
-                      }}
-                      width="50" 
-                    /> */}
                   </button>
                   <button className="justify-self-end self-end">
-                    {/* <img
-                      alt="Structure 9"
-                      className="w-12 h-12"
-                      height="50"
-                      src="https://qwbufbmxkjfaikoloudl.supabase.co/storage/v1/object/public/planets/71/TOI%20700.png"
-                      style={{
-                        aspectRatio: "50/50",
-                        objectFit: "cover",
-                      }}
-                      width="50"
-                    /> */}
                   </button>
-                  {/* <div className="h-screen flex flex-col items-center justify-center relative">
-                    <h1 className="text-center text-slate-300 text-opacity-100 font-['Inter'] tracking-[3.48px] mt-2 mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white text-gray-400">
-                      Test
-                    </h1>
-                    <div className="w-[1169.62px] h-[735.77px] left-[415px] top-[343px] absolute">
-                      <div className="w-[608px] h-[576px] left-[405px] top-[108px] absolute justify-center items-center inline-flex" />
-                      <img className="w-[147.59px] h-[150.77px] left-0 top-[285px] absolute" src="https://github.com/Signal-K/client/blob/main/public/assets/Inventory/Items/AeroCameraLevel1NoBg.png?raw=true" />
-                      <img className="w-[150px] h-[150px] left-[927px] top-[229.63px] absolute origin-top-left rotate-[-86.76deg]" src="https://qwbufbmxkjfaikoloudl.supabase.co/storage/v1/object/public/planets/69/Kepler22.png" />
-                    </div>
-                    <img
-                      src='https://qwbufbmxkjfaikoloudl.supabase.co/storage/v1/object/public/planets/69/Kepler22.png'
-                      alt="Planet Image"
-                      className={`w-4/12 h-4/12 sm:w-4/11 sm:h-4/11 object-contain z-20`}
-                      style={{
-                        zIndex: 20,
-                      }} 
-                    />
-                    <div className="flex items-start gap-8">
-                      <div className="flex flex-col items-center justify-start gap-4">
-                        <div className="text-center text-slate-300 text-opacity-70 text-[21.73px] font-medium font-['Inter'] tracking-[3.48px]">Mass</div>
-                        <div className="text-center text-white text-opacity-90 text-[27.17px] font-medium font-['Inter']"> mE</div>
-                      </div>
-        
-                      <div className="flex flex-col items-center justify-start gap-4">
-                        <div className="text-center text-slate-300 text-opacity-70 text-[21.73px] font-medium font-['Inter'] uppercase tracking-[3.48px]">Semi-Major Axis</div>
-                        <div className="text-center text-white text-opacity-90 text-[27.17px] font-medium font-['Inter']"> AU</div>
-                      </div>
-        
-                      <div className="flex flex-col items-center justify-start gap-4">
-                        <div className="text-center text-slate-300 text-opacity-70 text-[21.73px] font-medium font-['Inter'] uppercase tracking-[3.48px]">Anomaly type</div>
-                        <div className="text-center text-white text-opacity-90 text-[27.17px] font-medium font-['Inter']">?</div>
-                      </div>
-        
-                      <div className="flex flex-col items-center justify-start gap-4">
-                        <div className="text-center text-slate-300 text-opacity-70 text-[21.73px] font-medium font-['Inter'] uppercase tracking-[3.48px]">Eq. Temperature</div>
-                        <div className="text-center text-white text-opacity-90 text-[27.17px] font-medium font-['Inter']">°C</div>
-                      </div>
-        
-                      <div className="flex flex-col items-center justify-start gap-4">
-                        <div className="text-center text-slate-300 text-opacity-70 text-[21.73px] font-medium font-['Inter'] uppercase tracking-[3.48px]">TIC ID</div>
-                        <div className="text-center text-white text-opacity-90 text-[27.17px] font-medium font-['Inter']"></div>
-                      </div>
-                    </div>
-                  </div> */}
+                  {selectedStructure && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="max-w-2xl w-full bg-white p-8 rounded-lg shadow-xl z-50">
+            {!planetData?.lightkurve && (
+              <><LightkurveBaseGraph planetId={{ planetId: id }} />
+            <button onClick={handleClosePopup}>Close</button></>
+            )}
+            {planetData?.lightkurve && (
+              <><img src={planetData?.lightkurve} />
+              <button onClick={handleClosePopup}>Close</button></>
+            )}
+          </div>
+        </div>
+      )}
                 </div>
                 <div className="grid-container mb-24">
   {sectors.map((sector) => (

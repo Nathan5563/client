@@ -3,8 +3,7 @@ import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
 import React from "react";
 import Link from "next/link";
 import Layout from "../../components/Section/Layout";
-import { ImagesGrid } from "../../components/Content/Planets/Base/SectorGrid";
-import CreateBasePlanetSector, { AllSectors, UserOwnedSectorGrid } from "../../components/Content/Planets/Activities/SectorSetup";
+import CreateBasePlanetSector, { AllSectors, UserOwnedSectorGrid } from "../../components/Content/Planets/Sectors/SectorSetup";
 
 export default function GatherResourcesPage() {
     const supabase = useSupabaseClient();
