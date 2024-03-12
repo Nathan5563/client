@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import RoverImageGallery, { RoverImage, RoverImageNoHandle } from "../PlanetData/RandomRoverImage";
 import StructureComponent, { PlacedStructures } from "../Sectors/StructureCreate";
 import { SectorStructureOwned } from "../../Inventory/UserOwnedItems";
+import PostFormCardAnomalyTag from "../../Classify/AnomalyPostFormCard";
+import {ClassificationFeedForIndividualPlanet} from "../../ClassificationFeed";
 // import { CreateMenuBar, SectorCircularMenu } from "../../../Core/BottomBar";
 
 const AddResourceToInventory = ({ resource, sectorId }) => {
@@ -69,9 +71,22 @@ const AddResourceToInventory = ({ resource, sectorId }) => {
 };
 
 const SharePlanetCard = ({ sectorData }) => {
+  const supabase = useSupabaseClient();
+  const session = useSession();
+  const [shareCard, setShareCard] = useState(false);
+  const handleSharePopup = () => {
+    if (session?.user?.id == sectorData.owner) {
+      setShareCard(true);
+    } else {
+      throw new Error("Not owner");
+    }
+  }
+  const handleCloseSharePopup = () => {
+    setShareCard(false);
+  }
 
   const handleShare = () => {
-    console.log("Handling");
+    return 0;
   }
 
   // const {
@@ -88,20 +103,52 @@ const SharePlanetCard = ({ sectorData }) => {
   return (
       <div>
           <button
-            onClick={handleShare}
+            onClick={handleSharePopup}
             className={'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto'}
           >
             Share
           </button>
-
+          {shareCard && (
+              <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+                <div className="bg-white rounded-lg md:w-4/6 lg:w-3/6 xl:w-2/6 p-4">
+                  <h1 className={"text-2xl"}>Share your discovery!</h1>
+                  <hr className={"my-4"}/>
+                  <div className={"flex flex-col shadow-lg"}>
+                    <img src={"https://placehold.co/500x200"}/>
+                    <div className={"text-xl mx-6 my-4 flex flex-col"}>
+                      <span>Sector #{sectorData.id}</span>
+                      <span>Anomaly: {sectorData.anomaly}</span>
+                      <span>Owner: {session?.user?.id}</span>
+                      <span>Deposit: {sectorData.deposit}</span>
+                    </div>
+                    <button
+                        className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-2 mb-2 rounded"}
+                    >
+                      Share
+                    </button>
+                  </div>
+                  <hr className={"my-4"}/>
+                  <center>
+                    <button onClick={handleCloseSharePopup} className="flex items-center justify-center p-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                           stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      <span className="bg-yellow-500 text-white text-xs px-1 ml-1 rounded">Back</span>
+                    </button>
+                  </center>
+                </div>
+              </div>
+          )}
 
       </div>
   )
 }
 
-export default function BasePlanetSector({ sectorid }: { sectorid: string }) {
+export default function BasePlanetSector({sectorid}: { sectorid: string }) {
   const router = useRouter();
-  const { id: sectorId } = router.query;
+  const {id: sectorId} = router.query;
 
   const supabase = useSupabaseClient();
 
@@ -111,11 +158,11 @@ export default function BasePlanetSector({ sectorid }: { sectorid: string }) {
 
   const fetchDepositItem = async (depositId) => {
     try {
-      const { data, error } = await supabase
-        .from("inventoryITEMS")
-        .select("name")
-        .eq("id", depositId)
-        .single();
+      const {data, error} = await supabase
+          .from("inventoryITEMS")
+          .select("name")
+          .eq("id", depositId)
+          .single();
 
       if (data) {
         setDepositItem(data.name);
@@ -131,17 +178,18 @@ export default function BasePlanetSector({ sectorid }: { sectorid: string }) {
 
   const getSectorData = async () => {
     try {
-      const { data, error } = await supabase
-        .from("basePlanetSectors")
-        .select("*")
-        .eq("id", sectorId)
-        .single();
+      const {data, error} = await supabase
+          .from("basePlanetSectors")
+          .select("*")
+          .eq("id", sectorId)
+          .single();
 
       if (data) {
         setSectorData(data);
         if (data.deposit) {
           await fetchDepositItem(data.deposit);
-        };
+        }
+        ;
       }
 
       if (error) {
@@ -156,7 +204,8 @@ export default function BasePlanetSector({ sectorid }: { sectorid: string }) {
     const fetchData = async () => {
       if (sectorId) {
         await getSectorData();
-      };
+      }
+      ;
     };
 
     fetchData();
@@ -279,7 +328,10 @@ export default function BasePlanetSector({ sectorid }: { sectorid: string }) {
             )} */}
         </div>
       <div>
-          <AddResourceToInventory resource={deposit} sectorId={sectorId} />
+          <div className={'flex justify-between'}>
+            <AddResourceToInventory resource={deposit} sectorId={sectorId} />
+            <SharePlanetCard sectorData={sectorData} />
+          </div>
           {/* <SectorItems planetSectorId={sectorid} /> */}
           <SectorStructureOwned sectorid={sectorid} />
           <RoverImageNoHandle date='853' rover='opportunity' sectorNo={id} />
